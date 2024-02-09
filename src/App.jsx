@@ -38,14 +38,26 @@ function App() {
 
   useEffect(() => {
     if (values) {
+      const today = new Date().getDay();
+      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+      const pastDaysLabels = [];
+      for (let i = today - 1; i >= 0; i--) {
+        pastDaysLabels.push(daysOfWeek[i]);
+      }
+
+      for (let i = 6; i > today; i--) {
+        pastDaysLabels.push(daysOfWeek[i]);
+      }
+
       const ctx = document.getElementById('weatherChart');
-      const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].reverse();
       const data = values.slice(1, 8).map(curr => curr.temp);
       const conditions = values.slice(1, 8).map(curr => curr.conditions); 
+
       const myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: labels,
+          labels: pastDaysLabels.reverse(),
           datasets: [{
             label: 'Temperature (°C)',
             data: data,
@@ -59,15 +71,15 @@ function App() {
             y: {
               beginAtZero: false,
               ticks: {
-                color: 'green' // Set y-axis label color to green
+                color: 'green' 
               }
             },
             x: {
               grid: {
-                color: 'rgba(100, 100, 100, 0.5)' // Darker shade of gray for x-axis grid lines
+                color: 'rgba(100, 100, 100, 0.5)' 
               },
               ticks: {
-                color: 'yellow' // Set x-axis label color to yellow
+                color: 'yellow' 
               }
             }
           },
@@ -102,33 +114,32 @@ function App() {
       });
 
       return () => {
-        myChart.destroy(); // Cleanup when component unmounts
+        myChart.destroy(); 
       };
     }
   }, [values]);
-
   return (
     <div className='w-full h-screen text-white px-8'>
-      <nav className='w-full p-3 flex justify-between items-center'>
-        <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
-        <div className='flex justify-center items-center'>
-          <div className='bg-white w-[15rem] overflow-hidden shadow-2xl rounded flex items-center p-2 gap-2'>
-            <img src={search} alt="search" className='w-[1.5rem] h-[1.5rem]' />
-            <input
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  submitCity();
-                }
-              }}
-              type="text"
-              placeholder='Search city'
-              className='focus:outline-none w-full text-[#212121] text-lg'
-              value={input}
-              onChange={e => setInput(e.target.value)}
-            />
-          </div>
-        </div>
-      </nav>
+    <nav className='w-full p-3 flex justify-between items-center'>
+  <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
+  <div className='flex justify-center items-center flex-grow'>
+    <div className='bg-white w-[15rem] overflow-hidden shadow-2xl rounded flex items-center p-2 gap-2'>
+      <img src={search} alt="search" className='w-[1.5rem] h-[1.5rem]' />
+      <input
+        onKeyUp={(e) => {
+          if (e.key === 'Enter') {
+            submitCity();
+          }
+        }}
+        type="text"
+        placeholder='Search city'
+        className='focus:outline-none w-full text-[#212121] text-lg'
+        value={input}
+        onChange={e => setInput(e.target.value)}
+      />
+    </div>
+  </div>
+</nav>
 
       <BackgroundLayout />
       <main className='w-full flex flex-wrap gap-8 py-4 px-[10%] items-center justify-center'>
@@ -146,6 +157,12 @@ function App() {
           <canvas id="weatherChart" width="400" height="400"></canvas>
         </div>
       </main>
+      <div className='text-center p-4' style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
+        © 2024 Copyright:
+        <a className='text-reset fw-bold font-bold' href='https://mdbootstrap.com/'>
+          Shravan Das
+        </a>
+      </div>
     </div>
   );
 }
