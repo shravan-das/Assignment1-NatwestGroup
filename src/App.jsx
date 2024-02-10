@@ -152,7 +152,7 @@ function App() {
           conditions={weather.conditions}
           recentSearches={recentSearches}
         />
-        <div className='w-[60%]'>
+        <div className='w-full lg:w-[60%]'>
           <canvas id="weatherChart" width="400" height="400"></canvas>
         </div>
       </main>
