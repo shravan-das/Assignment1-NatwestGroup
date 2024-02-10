@@ -11,5 +11,7 @@ This is a weather application built using React.js. It allows users to search fo
 - Responsive design for seamless usage on different devices.
 
 ## Screenshots
-Include screenshots of the application here to give users a visual preview of the interface.
+
+![Screenshot (189)](https://github.com/shravan-das/Assignment1-NatwestGroup/assets/100745475/de8d8616-3b8b-42b1-bfee-a2e4478eeb10)
+
 
