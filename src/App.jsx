@@ -124,7 +124,7 @@ function App() {
   <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
   <div className='flex justify-center items-center flex-grow'>
     <div className='bg-white w-[15rem] overflow-hidden shadow-2xl rounded flex items-center p-2 gap-2'>
-      <img src={search} alt="search" className='w-[1.5rem] h-[1.5rem]' />
+      <img src={search} alt="search" className='w-[2.5rem] h-[1.5rem]' />
       <input
         onKeyUp={(e) => {
           if (e.key === 'Enter') {
