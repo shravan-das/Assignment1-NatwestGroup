@@ -54,7 +54,7 @@ const WeatherCard = ({
         return wind;
       }
     }
-    return sun; // Default icon
+    return sun; 
   };
 
   const icon = getIcon();

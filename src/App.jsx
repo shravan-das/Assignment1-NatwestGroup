@@ -9,7 +9,10 @@ import Chart from 'chart.js/auto';
 function App() {
   const [input, setInput] = useState('');
   const { weather, thisLocation, values, place, setPlace } = useStateContext();
-  const [recentSearches, setRecentSearches] = useState([]);
+  const [recentSearches, setRecentSearches] = useState(() => {
+    const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    return storedSearches;
+  });
 
   const submitCity = () => {
     const newPlace = input.trim();
@@ -32,27 +35,22 @@ function App() {
   }, [recentSearches]);
 
   useEffect(() => {
-    const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-    setRecentSearches(storedSearches);
-  }, []);
+    const today = new Date().getDay();
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-  useEffect(() => {
+    const pastDaysLabels = [];
+    for (let i = today - 1; i >= 0; i--) {
+      pastDaysLabels.push(daysOfWeek[i]);
+    }
+
+    for (let i = 6; i > today; i--) {
+      pastDaysLabels.push(daysOfWeek[i]);
+    }
+
     if (values) {
-      const today = new Date().getDay();
-      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-      const pastDaysLabels = [];
-      for (let i = today - 1; i >= 0; i--) {
-        pastDaysLabels.push(daysOfWeek[i]);
-      }
-
-      for (let i = 6; i > today; i--) {
-        pastDaysLabels.push(daysOfWeek[i]);
-      }
-
       const ctx = document.getElementById('weatherChart');
       const data = values.slice(1, 8).map(curr => curr.temp);
-      const conditions = values.slice(1, 8).map(curr => curr.conditions); 
+      const conditions = values.slice(1, 8).map(curr => curr.conditions);
 
       const myChart = new Chart(ctx, {
         type: 'line',
@@ -71,22 +69,22 @@ function App() {
             y: {
               beginAtZero: false,
               ticks: {
-                color: 'green' 
+                color: 'green'
               }
             },
             x: {
               grid: {
-                color: 'rgba(100, 100, 100, 0.5)' 
+                color: 'rgba(100, 100, 100, 0.5)'
               },
               ticks: {
-                color: 'yellow' 
+                color: 'yellow'
               }
             }
           },
           plugins: {
             tooltip: {
               callbacks: {
-                label: function(context) {
+                label: function (context) {
                   let label = 'Temperature: ';
                   if (context.parsed.y !== null) {
                     label += context.parsed.y.toFixed(2) + '°C';
@@ -114,32 +112,33 @@ function App() {
       });
 
       return () => {
-        myChart.destroy(); 
+        myChart.destroy();
       };
     }
   }, [values]);
+
   return (
     <div className='w-full h-screen text-white px-8'>
-    <nav className='w-full p-3 flex justify-between items-center'>
-  <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
-  <div className='flex justify-center items-center flex-grow'>
-    <div className='bg-white w-[15rem] overflow-hidden shadow-2xl rounded flex items-center p-2 gap-2'>
-      <img src={search} alt="search" className='w-[2.5rem] h-[1.5rem]' />
-      <input
-        onKeyUp={(e) => {
-          if (e.key === 'Enter') {
-            submitCity();
-          }
-        }}
-        type="text"
-        placeholder='Search city'
-        className='focus:outline-none w-full text-[#212121] text-lg'
-        value={input}
-        onChange={e => setInput(e.target.value)}
-      />
-    </div>
-  </div>
-</nav>
+      <nav className='w-full p-3 flex justify-between items-center'>
+        <img src={logo} alt="Logo" style={{ width: '70px', height: 'auto' }} />
+        <div className='flex justify-center items-center flex-grow'>
+          <div className='bg-white w-[15rem] overflow-hidden shadow-2xl rounded flex items-center p-2 gap-2'>
+            <img src={search} alt="search" className='w-[2.5rem] h-[1.5rem]' />
+            <input
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  submitCity();
+                }
+              }}
+              type="text"
+              placeholder='Search city'
+              className='focus:outline-none w-full text-[#212121] text-lg'
+              value={input}
+              onChange={e => setInput(e.target.value)}
+            />
+          </div>
+        </div>
+      </nav>
 
       <BackgroundLayout />
       <main className='w-full flex flex-wrap gap-8 py-4 px-[10%] items-center justify-center'>
@@ -151,7 +150,7 @@ function App() {
           heatIndex={weather.heatindex}
           iconString={weather.conditions}
           conditions={weather.conditions}
-          recentSearches = {recentSearches}
+          recentSearches={recentSearches}
         />
         <div className='w-[60%]'>
           <canvas id="weatherChart" width="400" height="400"></canvas>
